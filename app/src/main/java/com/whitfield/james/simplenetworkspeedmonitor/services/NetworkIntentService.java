@@ -145,6 +145,7 @@ public class NetworkIntentService extends Service {
                     downStart = downCurrent;
                     upStart = upCurrent;
 
+
                     Thread.sleep(1*1000);
 
                 }
