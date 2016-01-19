@@ -8,7 +8,7 @@ android {
         applicationId "com.whitfield.james.simplenetworkspeedmonitor"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 2
+        versionCode 3
         versionName "1.1"
     }
     buildTypes {

@@ -91,6 +91,7 @@ public class NetworkIntentService extends Service {
                     .setContentTitle("Network speed")
 //                    .setContentText("Setup...")
                     .setSmallIcon(R.drawable.ic_stat_)
+                    .setPriority(NotificationCompat.PRIORITY_MAX)
                     ;
 
             if(lockScreen == true){
