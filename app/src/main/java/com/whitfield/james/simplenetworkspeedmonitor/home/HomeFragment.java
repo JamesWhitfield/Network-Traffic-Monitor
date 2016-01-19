@@ -126,6 +126,7 @@ public class HomeFragment extends Fragment {
 
     private void sendStartStats() {
 
+        //Send tracking events
         tracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Stats")
                 .setAction("Download")
