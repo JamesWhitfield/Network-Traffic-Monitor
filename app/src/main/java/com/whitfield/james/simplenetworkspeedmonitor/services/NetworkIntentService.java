@@ -137,6 +137,7 @@ public class NetworkIntentService extends Service {
                         }
                     }
 
+
                     builder.setContentTitle(output)
                             .setShowWhen(false);
                     notificationManager.notify(NOTIFICATION_ID, builder.build());
