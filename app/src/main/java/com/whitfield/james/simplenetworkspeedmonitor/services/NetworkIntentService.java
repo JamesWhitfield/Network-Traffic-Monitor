@@ -1,5 +1,6 @@
 package com.whitfield.james.simplenetworkspeedmonitor.services;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 import android.text.Html;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.whitfield.james.simplenetworkspeedmonitor.R;
@@ -92,6 +94,7 @@ public class NetworkIntentService extends Service {
 //                    .setContentText("Setup...")
                     .setSmallIcon(R.drawable.ic_stat_)
                     .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .setCategory(Notification.CATEGORY_STATUS);
                     ;
 
             if(lockScreen == true){
@@ -120,7 +123,7 @@ public class NetworkIntentService extends Service {
                     String output = "";
                     if(down){
                         Long kbs = (downCurrent - downStart)/1024;
-                        kbs = Long.valueOf(3567);
+//                        kbs = Long.valueOf(3567);
                         if(kbs > 1024){
                             double x = (double)kbs/(double)1024;
                             output = output + Html.fromHtml("\u25bc")+ (Math.round(x *100.0)/100.0) + "/Mbs    ";
@@ -130,7 +133,8 @@ public class NetworkIntentService extends Service {
                     }
                     if(up){
                         Long kbs = (upCurrent - upStart)/1024;
-                        kbs = Long.valueOf(287);                        if(kbs > 1024){
+//                        kbs = Long.valueOf(287);
+                        if(kbs > 1024){
                             double x = (double)kbs/(double)1024;
                             output = output +  Html.fromHtml("\u25b2") + (Math.round(x *100.0)/100.0) + "/Mbs";
                         }else{
@@ -139,8 +143,15 @@ public class NetworkIntentService extends Service {
                     }
 
 
-                    builder.setContentTitle(output)
-                            .setShowWhen(false);
+//                    builder.setContentText(output);
+
+
+                    RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.custom_notification);
+                    remoteViews.setTextViewText(R.id.tvContent,output);
+                    builder.setContent(remoteViews);
+
+
+                    builder.setShowWhen(false);
                     notificationManager.notify(NOTIFICATION_ID, builder.build());
 
                     downStart = downCurrent;
