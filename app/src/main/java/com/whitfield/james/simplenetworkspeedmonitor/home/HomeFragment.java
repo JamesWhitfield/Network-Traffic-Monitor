@@ -24,13 +24,12 @@ import com.whitfield.james.simplenetworkspeedmonitor.services.NetworkIntentServi
  */
 public class HomeFragment extends Fragment {
 
-    HomeActivityInterface homeActivityInterface;
-    Boolean running;
+    private HomeActivityInterface homeActivityInterface;
 
-    Button btnStart;
-    CheckBox cbUp,cbdown,cbRestart,cbLockScreen;
+    private Button btnStart;
+    private CheckBox cbUp,cbdown,cbRestart,cbLockScreen;
 
-    Tracker tracker;
+    private Tracker tracker;
 
 
     @Override
@@ -75,7 +74,7 @@ public class HomeFragment extends Fragment {
     public void setViewValues(){
 
         setupSettings();
-            startServiceSetup();
+        startServiceSetup();
 
     }
 

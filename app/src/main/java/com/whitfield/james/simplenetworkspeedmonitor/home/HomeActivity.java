@@ -24,10 +24,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
     public static final String INTENT_TAG_UP = "UP";
     public static final String INTENT_TAG_DOWN = "DOWN";
     public static final String INTENT_TAG_RESTART = "RESTART";
-    public static final String INTENT_TAG_STOP = "STOP";
 
     private Fragment homeFragment;
-    ComponentName name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +64,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         bundle.putBoolean(INTENT_TAG_RESTART, restart);
         bundle.putBoolean(INTENT_TAG_LOCK_SCREEN,lockScreen);
         intent.putExtras(bundle);
-        name = startService(intent);
+
+        startService(intent);
 
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preferences_key),MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

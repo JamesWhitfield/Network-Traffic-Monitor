@@ -2,12 +2,14 @@ package com.whitfield.james.simplenetworkspeedmonitor.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.net.TrafficStats;
 import android.os.*;
 import android.support.annotation.Nullable;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
 import android.text.Html;
 import android.util.Log;
@@ -70,9 +72,11 @@ public class NetworkIntentService extends Service {
     }
 
     private final class ServiceHandler extends Handler {
+
         public ServiceHandler(Looper looper) {
             super(looper);
         }
+
         @Override
         public void handleMessage(Message msg) {
             Log.i(NAME, "Start");
@@ -93,15 +97,27 @@ public class NetworkIntentService extends Service {
                     .setContentTitle("Network speed")
 //                    .setContentText("Setup...")
                     .setSmallIcon(R.drawable.ic_stat_)
-                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setCategory(Notification.CATEGORY_STATUS);
-                    ;
+
+
+
 
             if(lockScreen == true){
                 builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
             }else{
                 builder.setVisibility(NotificationCompat.VISIBILITY_SECRET);
             }
+
+
+            Intent intent = new Intent(getBaseContext(),HomeActivity.class);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+            stackBuilder.addParentStack(HomeActivity.class);
+            stackBuilder.addNextIntent(intent);
+            PendingIntent pendingIntent = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+
+            builder.setContentIntent(pendingIntent);
+
 
             startForeground(NOTIFICATION_ID, builder.build());
 
