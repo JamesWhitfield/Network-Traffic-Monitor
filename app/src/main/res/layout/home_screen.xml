@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    tools:context=".home.HomeActivity">
 
 <LinearLayout
     android:orientation="vertical"
@@ -67,8 +68,34 @@
             android:checked="false"
             />
 
+        <CheckBox
+            android:id="@+id/cbTray"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show speed in system tray"
+            android:checked="false"
+            />
 
 
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/rgTray"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="16dp"
+            >
+            <RadioButton android:id="@+id/rbDownload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Download"
+                />
+            <RadioButton android:id="@+id/rbUpload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload"
+                />
+
+        </RadioGroup>
 
 
     </LinearLayout>

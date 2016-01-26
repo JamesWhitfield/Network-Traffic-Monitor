@@ -5,7 +5,7 @@ package com.whitfield.james.simplenetworkspeedmonitor.home;
  */
 public interface HomeActivityInterface {
 
-    public void startService(Boolean up,Boolean down,Boolean restart,Boolean lockScreen);
+    public void startService(boolean up, boolean down, boolean restart, boolean lockScreen, boolean tray, boolean trayDown);
     public void stopService();
 
 }

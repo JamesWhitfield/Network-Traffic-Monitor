@@ -6,11 +6,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.BoringLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -27,8 +30,10 @@ public class HomeFragment extends Fragment {
     private HomeActivityInterface homeActivityInterface;
 
     private Button btnStart;
-    private CheckBox cbUp,cbdown,cbRestart,cbLockScreen;
-
+    private CheckBox cbUp,cbdown,cbRestart,cbLockScreen,cbTray;
+    private RadioGroup rgTray;
+    private RadioButton rbDownload,rbUpload;
+    private Boolean trayDown;
     private Tracker tracker;
 
 
@@ -65,6 +70,11 @@ public class HomeFragment extends Fragment {
         cbUp = (CheckBox) view.findViewById(R.id.cbUpload);
         cbRestart = (CheckBox) view.findViewById(R.id.cbRestart);
         cbLockScreen = (CheckBox) view.findViewById(R.id.cbLockScreen);
+        cbTray = (CheckBox) view.findViewById(R.id.cbTray);
+
+        rgTray = (RadioGroup) view.findViewById(R.id.rgTray);
+        rbDownload = (RadioButton) view.findViewById(R.id.rbDownload);
+        rbUpload = (RadioButton) view.findViewById(R.id.rbUpload);
 
 
         setViewValues();
@@ -83,12 +93,43 @@ public class HomeFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(getString(R.string.preferences_key), getActivity().MODE_PRIVATE);
         cbUp.setChecked(sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_UP, true));
         cbdown.setChecked(sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_DOWN, true));
-        cbRestart.setChecked(sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_LOCK_SCREEN, true));
+        cbRestart.setChecked(sharedPreferences.getBoolean(getString(R.string.restart_key), true));
         cbLockScreen.setChecked(sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_LOCK_SCREEN,true));
+        cbTray.setChecked(sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_TRAY,true));
+        if(sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_TRAY_DOWN,true)){
 
+            rbDownload.setChecked(true);
+        }else{
+            rbUpload.setChecked(true);
+        }
+
+
+        if(cbTray.isChecked()){
+            rbUpload.setEnabled(true);
+            rbDownload.setEnabled(true);
+        }else{
+            rbUpload.setEnabled(false);
+            rbDownload.setEnabled(false);
+        }
+
+        cbTray.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(cbTray.isChecked()){
+                    rbUpload.setEnabled(true);
+                    rbDownload.setEnabled(true);
+                }else{
+                    rbUpload.setEnabled(false);
+                    rbDownload.setEnabled(false);
+                }
+            }
+        });
     }
 
     public void startServiceSetup(){
+
+
+
         if(isMyServiceRunning(NetworkIntentService.class)){
             btnStart.setText("Stop");
             btnStart.setOnClickListener(new View.OnClickListener() {
@@ -109,8 +150,14 @@ public class HomeFragment extends Fragment {
             btnStart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    if(rbDownload.isChecked()){
+                        trayDown = true;
+                    }else{
+                        trayDown = false;
+                    }
                     //Start
-                    homeActivityInterface.startService(cbUp.isChecked(), cbdown.isChecked(), cbRestart.isChecked(), cbLockScreen.isChecked());
+                    homeActivityInterface.startService(cbUp.isChecked(), cbdown.isChecked(), cbRestart.isChecked(), cbLockScreen.isChecked(),cbTray.isChecked(),trayDown);
                     tracker.send(new HitBuilders.EventBuilder()
                             .setCategory("Action")
                             .setAction("Start click")

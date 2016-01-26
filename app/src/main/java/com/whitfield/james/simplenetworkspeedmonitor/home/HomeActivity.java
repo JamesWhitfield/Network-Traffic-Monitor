@@ -1,6 +1,5 @@
 package com.whitfield.james.simplenetworkspeedmonitor.home;
 
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -20,6 +19,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
 
 
     public static final String INTENT_TAG_LOCK_SCREEN = "LOCK_SCREEN";
+    public static final String INTENT_TAG_TRAY  = "TRAY";
+    public static final String INTENT_TAG_TRAY_DOWN  = "TRAY_DOWN";
     private final String HOME_ACTIVITY_TAG = "HOME_ACTIVITY";
     public static final String INTENT_TAG_UP = "UP";
     public static final String INTENT_TAG_DOWN = "DOWN";
@@ -55,7 +56,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
 
 
     @Override
-    public void startService(Boolean up,Boolean down,Boolean restart,Boolean lockScreen) {
+    public void startService(boolean up, boolean down, boolean restart, boolean lockScreen, boolean tray, boolean trayDown) {
 
         Intent intent = new Intent(getApplicationContext(), NetworkIntentService.class);
         Bundle bundle = new Bundle();
@@ -63,6 +64,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         bundle.putBoolean(INTENT_TAG_DOWN, down);
         bundle.putBoolean(INTENT_TAG_RESTART, restart);
         bundle.putBoolean(INTENT_TAG_LOCK_SCREEN,lockScreen);
+        bundle.putBoolean(INTENT_TAG_TRAY,tray);
+        bundle.putBoolean(INTENT_TAG_TRAY_DOWN,trayDown);
         intent.putExtras(bundle);
 
         startService(intent);
@@ -73,6 +76,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         editor.putBoolean(INTENT_TAG_UP,up);
         editor.putBoolean(INTENT_TAG_DOWN,down);
         editor.putBoolean(INTENT_TAG_LOCK_SCREEN,lockScreen);
+        editor.putBoolean(INTENT_TAG_TRAY,tray);
+        editor.putBoolean(INTENT_TAG_TRAY_DOWN,trayDown);
         editor.commit();
 
         Log.i("Preferences",sharedPreferences.getAll().toString());
