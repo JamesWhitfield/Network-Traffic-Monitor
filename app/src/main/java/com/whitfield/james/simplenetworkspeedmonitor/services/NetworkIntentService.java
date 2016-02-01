@@ -18,11 +18,15 @@ import android.widget.RemoteViews;
 import com.whitfield.james.simplenetworkspeedmonitor.R;
 import com.whitfield.james.simplenetworkspeedmonitor.home.HomeActivity;
 
+import java.util.Date;
+
 
 /**
  * Created by jwhit on 18/01/2016.
  */
 public class NetworkIntentService extends Service {
+
+    private final static String TAG = "SpeedService";
 
     private Looper mServiceLooper;
     private ServiceHandler mServiceHandler;
@@ -140,77 +144,45 @@ public class NetworkIntentService extends Service {
             Long upStart = TrafficStats.getTotalTxBytes();
             Long downCurrent;
             Long upCurrent;
+            Long currentUpdate,diff;
+
+            Long lastUpdate = new Date().getTime();
 
 
-            try {
-                while (!stop){
+            while (!stop){
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
 
 
+                }
+                if(!stop) {
                     downCurrent = TrafficStats.getTotalRxBytes();
                     upCurrent = TrafficStats.getTotalTxBytes();
+                    currentUpdate = new Date().getTime();
+                    diff = (currentUpdate - lastUpdate) / 1000;
+                    if (diff == 0) {
+                        Log.i(TAG, "wait...");
+                        continue;
+                    } else if (diff == 1) {
+                        Log.i(TAG, "Update");
 
-                    String output = "";
-                    //Download output
-                    if(down){
-                        Long kbs = (downCurrent - downStart)/1024;
-//                        kbs = Long.valueOf(3567);
-                        if(kbs > 1024){
-                            double x = (double)kbs/(double)1024;
-                            double fin = (Math.round(x *100.0)/100.0);
-                            if(tray && trayDown){
-                                Log.i("TRAY","DOWN");
-                                setSmallIconMb(builder, fin);
-                            }
-                            output = output + Html.fromHtml("\u25bc")+ fin + "/Mbs    ";
-                        }else{
-                            output = output + Html.fromHtml("\u25bc")+ kbs + "/kbs    ";
-                            if(tray && trayDown) {
-                                Log.i("TRAY","DOWN");
-                                setSmallIconKb(builder, kbs);
-                            }
-                        }
+                    } else {
+                        Log.i(TAG, "Late update");
 
                     }
-                    //Upload Output
-                    if(up){
-                        Long kbs = (upCurrent - upStart)/1024;
-//                        kbs = Long.valueOf(287);
-                        if(kbs > 1024){
-                            double x = (double)kbs/(double)1024;
-                            double fin = (Math.round(x *100.0)/100.0);
-                            if(tray && !trayDown){
-                                Log.i("TRAY","UP");
-                                setSmallIconMb(builder, fin);
-                            }
-                            output = output +  Html.fromHtml("\u25b2") + fin + "/Mbs";
-                        }else{
-                            output = output +  Html.fromHtml("\u25b2") + kbs + "/kbs";
-                            if(tray && !trayDown){
-                                Log.i("TRAY","UP");
-                                setSmallIconKb(builder, kbs);
-                            }
-                        }
-                    }
 
-                    RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.custom_notification);
-                    remoteViews.setTextViewText(R.id.tvContent, output);
-                    Log.i("OUTPUT",output);
-                    builder.setContent(remoteViews);
-
-
-
-                    builder.setShowWhen(false);
-                    notificationManager.notify(NOTIFICATION_ID, builder.build());
-
+                    update(downCurrent, downStart, upCurrent, upStart, builder, notificationManager);
+                    //Prepare for next iteration
+                    lastUpdate = currentUpdate;
                     downStart = downCurrent;
                     upStart = upCurrent;
 
-
-                    Thread.sleep(1*1000);
-
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+
+
+
             }
             // Stop the service using the startId, so that we don't stop
             // the service in the middle of handling another job
@@ -218,246 +190,105 @@ public class NetworkIntentService extends Service {
         }
     }
 
-    private void setSmallIconMb(NotificationCompat.Builder builder, double fin) {
+    private void update(Long downCurrent, Long downStart, Long upCurrent, Long upStart, NotificationCompat.Builder builder, NotificationManager notificationManager){
 
-        if(fin < 1.1){
-            builder.setSmallIcon(R.drawable.ic_stat_1mb);
-        }else if( fin < 1.2){
-            builder.setSmallIcon(R.drawable.ic_stat_1_1mb);
-        }else if( fin < 1.3){
-            builder.setSmallIcon(R.drawable.ic_stat_1_2mb);
-        }else if( fin < 1.4){
-            builder.setSmallIcon(R.drawable.ic_stat_1_3mb);
-        }else if( fin < 1.5){
-            builder.setSmallIcon(R.drawable.ic_stat_1_4mb);
-        }else if( fin < 1.6){
-            builder.setSmallIcon(R.drawable.ic_stat_1_5mb);
-        }else if( fin < 1.7){
-            builder.setSmallIcon(R.drawable.ic_stat_1_6mb);
-        }else if( fin < 1.8){
-            builder.setSmallIcon(R.drawable.ic_stat_1_7mb);
-        }else if( fin < 1.9){
-            builder.setSmallIcon(R.drawable.ic_stat_1_8mb);
-        }else if( fin < 2){
-            builder.setSmallIcon(R.drawable.ic_stat_1_9mb);
-        }else if( fin < 2.1){
-            builder.setSmallIcon(R.drawable.ic_stat_2mb);
-        }else if( fin < 2.2){
-            builder.setSmallIcon(R.drawable.ic_stat_2_1mb);
-        }else if( fin < 2.3){
-            builder.setSmallIcon(R.drawable.ic_stat_2_2mb);
-        }else if( fin < 2.4){
-            builder.setSmallIcon(R.drawable.ic_stat_2_3mb);
-        }else if( fin < 2.5){
-            builder.setSmallIcon(R.drawable.ic_stat_2_4mb);
-        }else if( fin < 2.6){
-            builder.setSmallIcon(R.drawable.ic_stat_2_5mb);
-        }else if( fin < 2.7){
-            builder.setSmallIcon(R.drawable.ic_stat_2_6mb);
-        }else if( fin < 2.8){
-            builder.setSmallIcon(R.drawable.ic_stat_2_7mb);
-        }else if( fin < 2.9){
-            builder.setSmallIcon(R.drawable.ic_stat_2_8mb);
-        }else if( fin < 3){
-            builder.setSmallIcon(R.drawable.ic_stat_2_9mb);
-        }else if( fin < 3.2){
-            builder.setSmallIcon(R.drawable.ic_stat_3mb);
-        }else if( fin < 3.4){
-            builder.setSmallIcon(R.drawable.ic_stat_3_2mb);
-        }else if( fin < 3.6){
-            builder.setSmallIcon(R.drawable.ic_stat_3_4mb);
-        }else if( fin < 3.8){
-            builder.setSmallIcon(R.drawable.ic_stat_3_6mb);
-        }else if( fin < 4){
-            builder.setSmallIcon(R.drawable.ic_stat_3_8mb);
-        }else if( fin < 4.2){
-            builder.setSmallIcon(R.drawable.ic_stat_4mb);
-        }else if( fin < 4.4){
-            builder.setSmallIcon(R.drawable.ic_stat_4_2mb);
-        }else if( fin < 4.6){
-            builder.setSmallIcon(R.drawable.ic_stat_4_4mb);
-        }else if( fin < 4.8){
-            builder.setSmallIcon(R.drawable.ic_stat_4_6mb);
-        }else if( fin < 5){
-            builder.setSmallIcon(R.drawable.ic_stat_4_8mb);
-        }else if( fin < 5.5){
-            builder.setSmallIcon(R.drawable.ic_stat_5mb);
-        }else if( fin < 6){
-            builder.setSmallIcon(R.drawable.ic_stat_5_5mb);
-        }else if( fin < 6.5){
-            builder.setSmallIcon(R.drawable.ic_stat_6mb);
-        }else if( fin < 7){
-            builder.setSmallIcon(R.drawable.ic_stat_6_5mb);
-        }else if( fin < 7.5){
-            builder.setSmallIcon(R.drawable.ic_stat_7mb);
-        }else if( fin < 8){
-            builder.setSmallIcon(R.drawable.ic_stat_7_5mb);
-        }else if( fin < 8.5){
-            builder.setSmallIcon(R.drawable.ic_stat_8mb);
-        }else if( fin < 9){
-            builder.setSmallIcon(R.drawable.ic_stat_8_5mb);
-        }else if( fin < 9.5){
-            builder.setSmallIcon(R.drawable.ic_stat_9mb);
-        }else if( fin < 10){
-            builder.setSmallIcon(R.drawable.ic_stat_9_5mb);
-        }else if( fin < 11){
-            builder.setSmallIcon(R.drawable.ic_stat_10mb);
-        }else if( fin < 12){
-            builder.setSmallIcon(R.drawable.ic_stat_11mb);
-        }else if( fin < 13){
-            builder.setSmallIcon(R.drawable.ic_stat_12mb);
-        }else if( fin < 14){
-            builder.setSmallIcon(R.drawable.ic_stat_13mb);
-        }else if( fin < 15){
-            builder.setSmallIcon(R.drawable.ic_stat_14mb);
-        }else if( fin < 16){
-            builder.setSmallIcon(R.drawable.ic_stat_15mb);
-        }else if( fin < 17){
-            builder.setSmallIcon(R.drawable.ic_stat_16mb);
-        }else if( fin < 18){
-            builder.setSmallIcon(R.drawable.ic_stat_17mb);
-        }else if( fin < 19){
-            builder.setSmallIcon(R.drawable.ic_stat_18mb);
-        }else if( fin < 20){
-            builder.setSmallIcon(R.drawable.ic_stat_19mb);
-        }else if( fin < 21){
-            builder.setSmallIcon(R.drawable.ic_stat_20mb);
-        }else if( fin < 22){
-            builder.setSmallIcon(R.drawable.ic_stat_21mb);
-        }else if( fin < 23){
-            builder.setSmallIcon(R.drawable.ic_stat_22mb);
-        }else if( fin < 24){
-            builder.setSmallIcon(R.drawable.ic_stat_23mb);
-        }else if( fin < 25){
-            builder.setSmallIcon(R.drawable.ic_stat_24mb);
-        }else if( fin < 26){
-            builder.setSmallIcon(R.drawable.ic_stat_25mb);
-        }else if( fin < 27){
-            builder.setSmallIcon(R.drawable.ic_stat_26mb);
-        }else if( fin < 28){
-            builder.setSmallIcon(R.drawable.ic_stat_27mb);
-        }else if( fin < 29){
-            builder.setSmallIcon(R.drawable.ic_stat_28mb);
-        }else if( fin < 30){
-            builder.setSmallIcon(R.drawable.ic_stat_29mb);
-        }else if( fin < 31){
-            builder.setSmallIcon(R.drawable.ic_stat_30mb);
-        }else if( fin < 32){
-            builder.setSmallIcon(R.drawable.ic_stat_31mb);
-        }else if( fin < 33){
-            builder.setSmallIcon(R.drawable.ic_stat_32mb);
-        }else if( fin < 34){
-            builder.setSmallIcon(R.drawable.ic_stat_33mb);
-        }else if( fin < 35){
-            builder.setSmallIcon(R.drawable.ic_stat_34mb);
-        }else if( fin < 36){
-            builder.setSmallIcon(R.drawable.ic_stat_35mb);
-        }else if( fin < 37){
-            builder.setSmallIcon(R.drawable.ic_stat_36mb);
-        }else if( fin < 38){
-            builder.setSmallIcon(R.drawable.ic_stat_37mb);
-        }else if( fin < 39){
-            builder.setSmallIcon(R.drawable.ic_stat_38mb);
-        }else if( fin < 40){
-            builder.setSmallIcon(R.drawable.ic_stat_39mb);
-        }else if( fin < 41){
-            builder.setSmallIcon(R.drawable.ic_stat_40mb);
-        }else if( fin < 42){
-            builder.setSmallIcon(R.drawable.ic_stat_41mb);
-        }else if( fin < 43){
-            builder.setSmallIcon(R.drawable.ic_stat_42mb);
-        }else if( fin < 44){
-            builder.setSmallIcon(R.drawable.ic_stat_43mb);
-        }else if( fin < 45){
-            builder.setSmallIcon(R.drawable.ic_stat_44mb);
-        }else if( fin < 46){
-            builder.setSmallIcon(R.drawable.ic_stat_45mb);
-        }else if( fin < 47){
-            builder.setSmallIcon(R.drawable.ic_stat_46mb);
-        }else if( fin < 48){
-            builder.setSmallIcon(R.drawable.ic_stat_47mb);
-        }else if( fin < 49){
-            builder.setSmallIcon(R.drawable.ic_stat_48mb);
-        }else if( fin < 50){
-            builder.setSmallIcon(R.drawable.ic_stat_49mb);
-        }else if( fin < 51){
-            builder.setSmallIcon(R.drawable.ic_stat_50mb);
-        }else if( fin >= 51){
-            builder.setSmallIcon(R.drawable.ic_stat_50mb_big);
+        String output = "";
+        //Download output
+        if(down){
+            Long kbs = (downCurrent - downStart)/1024;
+            if(kbs > 1024){
+                long mbs = kbs/1024;
+                output = output + Html.fromHtml("\u25bc")+ mbs + "/Mbs    ";
+            }else{
+
+                output = output + Html.fromHtml("\u25bc")+ kbs + "/Kbs    ";
+            }
+
+            if(tray && trayDown) {
+                Log.i("TRAY","DOWN");
+                setSmallIcon(builder, kbs);
+            }
+//                        }
+
         }
+        //Upload Output
+        if(up){
+            Long kbs = (upCurrent - upStart)/1024;
+
+            if(kbs > 1024){
+
+                long mbs = kbs/1024;
+                output = output +  Html.fromHtml("\u25b2") + mbs + "/Mbs";
+            }else{
+                output = output +  Html.fromHtml("\u25b2") + kbs + "/kbs";
+            }
+
+            if(tray && !trayDown){
+                Log.i("TRAY","UP");
+                setSmallIcon(builder, kbs);
+            }
+//                        }
+        }
+
+        RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.custom_notification);
+        remoteViews.setTextViewText(R.id.tvContent, output);
+        Log.i("OUTPUT", output.trim());
+        builder.setContent(remoteViews);
+
+        builder.setShowWhen(false);
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
+
     }
 
-    public void setSmallIconKb(NotificationCompat.Builder builder, double fin){
 
+    public void setSmallIcon(NotificationCompat.Builder builder, double fin){
 
-        if(fin > 900){
-            builder.setSmallIcon(R.drawable.ic_stat_0_9mb);
-        }else if(fin > 800){
-            builder.setSmallIcon(R.drawable.ic_stat_0_8mb);
-        }else if(fin > 700){
-            builder.setSmallIcon(R.drawable.ic_stat_0_7mb);
-        }else if(fin > 600){
-            builder.setSmallIcon(R.drawable.ic_stat_0_6mb);
-        }else if(fin > 500){
-            builder.setSmallIcon(R.drawable.ic_stat_0_5mb);
-        }else if(fin > 400){
-            builder.setSmallIcon(R.drawable.ic_stat_0_4mb);
-        }else if(fin > 300){
-            builder.setSmallIcon(R.drawable.ic_stat_0_3mb);
-        }else if(fin > 200){
-            builder.setSmallIcon(R.drawable.ic_stat_0_2mb);
-        }else if(fin > 100){
-            builder.setSmallIcon(R.drawable.ic_stat_0_1mb);
-        }else if(fin > 90){
-            builder.setSmallIcon(R.drawable.ic_stat_90kb);
-        }else if(fin > 80){
-            builder.setSmallIcon(R.drawable.ic_stat_80kb);
-        }else if(fin > 70){
-            builder.setSmallIcon(R.drawable.ic_stat_70kb);
-        }else if(fin > 60){
-            builder.setSmallIcon(R.drawable.ic_stat_60kb);
-        }else if(fin > 50){
-            builder.setSmallIcon(R.drawable.ic_stat_50kb);
-        }else if(fin > 45){
-            builder.setSmallIcon(R.drawable.ic_stat_45kb);
-        }else if(fin > 40){
-            builder.setSmallIcon(R.drawable.ic_stat_40kb);
-        }else if(fin > 35){
-            builder.setSmallIcon(R.drawable.ic_stat_35kb);
-        }else if(fin > 30){
-            builder.setSmallIcon(R.drawable.ic_stat_30kb);
-        }else if(fin > 25){
-            builder.setSmallIcon(R.drawable.ic_stat_25kb);
-        }else if(fin > 20){
-            builder.setSmallIcon(R.drawable.ic_stat_20kb);
-        }else if(fin > 15){
-            builder.setSmallIcon(R.drawable.ic_stat_15kb);
-        }else if(fin > 10){
-            builder.setSmallIcon(R.drawable.ic_stat_10kb);
-        }else if(fin > 10){
-            builder.setSmallIcon(R.drawable.ic_stat_10kb);
-        }else if(fin >= 9){
-            builder.setSmallIcon(R.drawable.ic_stat_9kb);
-        }else if(fin >= 8){
-            builder.setSmallIcon(R.drawable.ic_stat_8kb);
-        }else if(fin >= 7){
-            builder.setSmallIcon(R.drawable.ic_stat_7kb);
-        }else if(fin >= 6){
-            builder.setSmallIcon(R.drawable.ic_stat_6kb);
-        }else if(fin >= 5){
-            builder.setSmallIcon(R.drawable.ic_stat_5kb);
-        }else if(fin >= 4){
-            builder.setSmallIcon(R.drawable.ic_stat_4kb);
-        }else if(fin >= 3){
-            builder.setSmallIcon(R.drawable.ic_stat_3kb);
-        }else if(fin >= 2){
-            builder.setSmallIcon(R.drawable.ic_stat_2kb);
-        }else if(fin >= 1){
-            builder.setSmallIcon(R.drawable.ic_stat_1kb);
-        }else if(fin <= 1){
-            builder.setSmallIcon(R.drawable.ic_stat_0kb);
+        Long kbs = Math.round(fin);
+        int i;
+
+        if(kbs == 0.0){
+
+            i = R.drawable.ic_stat_;
+
+        }else if(kbs <= 99) {
+
+            i = getResources().getIdentifier("ic_stat_" + Math.round(fin) + "k", "drawable", getPackageName());
+
+        }else if (kbs <= 9949){
+
+            String fileName = conevterKbsToDecimalfileNameString(fin);
+
+            i = getResources().getIdentifier("ic_stat_" + fileName + "m", "drawable", getPackageName());
+//            i = getResources().getIdentifier("ic_stat_" + "0_1" + "m", "drawable", getPackageName());
+
+        }else if (kbs <=  50000){
+
+            String fileName = conevterKbsToIntegerfileNameString(fin);
+            i = getResources().getIdentifier("ic_stat_" + fileName + "m", "drawable", getPackageName());
+
+        }else{
+
+            i = R.drawable.ic_stat_50_plus_m;
         }
 
+        builder.setSmallIcon(i);
+
+
+
+    }
+    private String conevterKbsToDecimalfileNameString(Double fin){
+
+        Long j = Math.round(fin/100);
+        Double l = j /10.0;
+        String k = String.valueOf(l);
+        return k.replace(".","_");
+    }
+
+    private String conevterKbsToIntegerfileNameString(Double fin){
+
+        Long j = Math.round(fin/1000);
+        String k = String.valueOf(j);
+        return k;
     }
 
     @Override

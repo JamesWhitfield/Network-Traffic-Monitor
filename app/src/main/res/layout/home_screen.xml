@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:text="@string/title_text"
         style="@style/material_standard_textview"
-        android:textSize="@dimen/large_text_size"
+        android:layout_marginBottom="8dp"
 
         />
 
@@ -25,7 +25,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="16dp"
         >
 
         <TextView
@@ -33,9 +32,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_title"
-            style="@style/material_standard_textview"
-            android:layout_marginBottom="8dp"
+            style="@style/material_secondary_textview"
             />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/colorPrimary"/>
 
         <CheckBox
             android:id="@+id/cbDown"
@@ -83,6 +86,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="4dp"
             >
             <RadioButton android:id="@+id/rbDownload"
                 android:layout_width="wrap_content"
@@ -101,30 +105,44 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        >
+        android:padding="8dp">
 
         <Button
             android:id="@+id/btnStart"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Start"
-            android:background="@color/colorAccent"
+            android:background="@drawable/rounded_button"
             android:layout_marginRight="8dp"
+            android:textColor="@android:color/white"
+
             />
 
     </LinearLayout>
 
+    <TextView
+        android:layout_marginTop="16dp"
+        android:id="@+id/tvInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/info_title"
+        style="@style/material_secondary_textview"
+        />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimary"/>
 
     <TextView
         android:layout_marginTop="16dp"
         android:id="@+id/tvInstructions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/instruction_text"
+        android:text="@string/instruction_text_1"
         style="@style/material_standard_textview"
         />
 
@@ -133,7 +151,7 @@
         android:id="@+id/tvHint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hint_text"
+        android:text="@string/instruction_text_2"
         style="@style/material_standard_textview"
         />
 </LinearLayout>

@@ -1,10 +1,12 @@
 <resources>
 
-    <string name="app_name">Simple Network Speed Monitor</string>
+    <string name="app_name">Network Traffic Monitor</string>
     <string name="preferences_key">preferences_key</string>
     <string name="restart_key">restart</string>
-    <string name="title_text">No Ads \nNo Gimmicks\nJust Network Speed</string>
+    <string name="title_text">To get started select some settings from the options below.</string>
     <string name="settings_title">Settings</string>
-    <string name="hint_text">Hint: You can even close the app and the monitor will continue to work</string>
-    <string name="instruction_text">After pressing start just open the notification panel to see the stats you are looking for. Enjoy!</string>
+    <string name="instruction_text_2">\u2022 You don\'t even have to keep this app running after you have started the monitor.</string>
+    <string name="instruction_text_1"> \u2022 Press the start button to begin seeing your network traffic in real time.</string>
+    <string name="info_title">Information</string>
 </resources>
+
