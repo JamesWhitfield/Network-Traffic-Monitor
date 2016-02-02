@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.whitfield.james.simplenetworkspeedmonitor.R;
 import com.whitfield.james.simplenetworkspeedmonitor.home.HomeActivity;
@@ -31,11 +30,16 @@ public class StartupBroadcastReceiver extends BroadcastReceiver {
             bundle.putBoolean(HomeActivity.INTENT_TAG_UP, sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_UP, true));
             bundle.putBoolean(HomeActivity.INTENT_TAG_DOWN, sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_DOWN, true));
             bundle.putBoolean(HomeActivity.INTENT_TAG_LOCK_SCREEN, sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_LOCK_SCREEN,true));
+            bundle.putBoolean(HomeActivity.INTENT_TAG_RESTART, sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_RESTART,true));
+            bundle.putBoolean(HomeActivity.INTENT_TAG_TRAY,sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_TRAY,true));
+            bundle.putBoolean(HomeActivity.INTENT_TAG_TRAY_DOWN,sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_TRAY_DOWN,true));
             intent1.putExtras(bundle);
 
             context.startService(intent1);
             Log.i("Receiver", "Service started");
+        }else{
+
+            Log.i("Receiver","Service ignored");
         }
-        Log.i("Receiver","Service ignored");
     }
 }

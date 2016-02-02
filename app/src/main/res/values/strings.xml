@@ -8,5 +8,6 @@
     <string name="instruction_text_2">\u2022 You don\'t even have to keep this app running after you have started the monitor.</string>
     <string name="instruction_text_1"> \u2022 Press the start button to begin seeing your network traffic in real time.</string>
     <string name="info_title">Information</string>
+    <string name="instruction_text_3" >\u2022 Restart the service to see settings changes.</string>
 </resources>
 

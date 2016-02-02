@@ -62,8 +62,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         Bundle bundle = new Bundle();
         bundle.putBoolean(INTENT_TAG_UP,up);
         bundle.putBoolean(INTENT_TAG_DOWN, down);
-        bundle.putBoolean(INTENT_TAG_RESTART, restart);
         bundle.putBoolean(INTENT_TAG_LOCK_SCREEN,lockScreen);
+        bundle.putBoolean(INTENT_TAG_RESTART, restart);
         bundle.putBoolean(INTENT_TAG_TRAY,tray);
         bundle.putBoolean(INTENT_TAG_TRAY_DOWN,trayDown);
         intent.putExtras(bundle);

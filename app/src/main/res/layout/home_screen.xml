@@ -148,10 +148,19 @@
 
     <TextView
         android:layout_marginTop="16dp"
-        android:id="@+id/tvHint"
+        android:id="@+id/tvHint1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/instruction_text_2"
+        style="@style/material_standard_textview"
+        />
+
+    <TextView
+        android:layout_marginTop="16dp"
+        android:id="@+id/tvHint2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/instruction_text_3"
         style="@style/material_standard_textview"
         />
 </LinearLayout>
