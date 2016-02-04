@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_title"
-            style="@style/material_secondary_textview"
+            style="@style/material_third_textview"
             />
 
         <View
@@ -68,6 +68,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Show in lock screen"
+            android:checked="false"
+            />
+
+        <CheckBox
+            android:id="@+id/cbSplitMobileWifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Split mobile and wifi data"
             android:checked="false"
             />
 
@@ -129,7 +137,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/info_title"
-        style="@style/material_secondary_textview"
+        style="@style/material_third_textview"
         />
 
     <View
@@ -143,7 +151,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/instruction_text_1"
-        style="@style/material_standard_textview"
+        style="@style/material_secondary_textview"
         />
 
     <TextView
@@ -152,7 +160,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/instruction_text_2"
-        style="@style/material_standard_textview"
+        style="@style/material_secondary_textview"
         />
 
     <TextView
@@ -161,7 +169,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/instruction_text_3"
-        style="@style/material_standard_textview"
+        style="@style/material_secondary_textview"
         />
 </LinearLayout>
 </ScrollView>

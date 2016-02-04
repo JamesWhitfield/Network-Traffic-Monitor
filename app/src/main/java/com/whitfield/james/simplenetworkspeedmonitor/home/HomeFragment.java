@@ -28,7 +28,7 @@ public class HomeFragment extends Fragment {
     private HomeActivityInterface homeActivityInterface;
 
     private Button btnStart;
-    private CheckBox cbUp,cbdown,cbRestart,cbLockScreen,cbTray;
+    private CheckBox cbUp,cbdown,cbRestart,cbLockScreen,cbTray,cbSplit;
     private RadioGroup rgTray;
     private RadioButton rbDownload,rbUpload;
     private Boolean trayDown;
@@ -69,6 +69,7 @@ public class HomeFragment extends Fragment {
         cbRestart = (CheckBox) view.findViewById(R.id.cbRestart);
         cbLockScreen = (CheckBox) view.findViewById(R.id.cbLockScreen);
         cbTray = (CheckBox) view.findViewById(R.id.cbTray);
+        cbSplit = (CheckBox) view.findViewById(R.id.cbSplitMobileWifi);
 
         rgTray = (RadioGroup) view.findViewById(R.id.rgTray);
         rbDownload = (RadioButton) view.findViewById(R.id.rbDownload);
@@ -89,11 +90,14 @@ public class HomeFragment extends Fragment {
     private void setupSettings() {
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(getString(R.string.preferences_key), getActivity().MODE_PRIVATE);
+
         cbUp.setChecked(sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_UP, true));
         cbdown.setChecked(sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_DOWN, true));
         cbRestart.setChecked(sharedPreferences.getBoolean(getString(R.string.restart_key), true));
         cbLockScreen.setChecked(sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_LOCK_SCREEN,true));
         cbTray.setChecked(sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_TRAY,true));
+        cbSplit.setChecked(sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_SPLIT,false));
+
         if(sharedPreferences.getBoolean(HomeActivity.INTENT_TAG_TRAY_DOWN,true)){
 
             rbDownload.setChecked(true);
@@ -155,7 +159,7 @@ public class HomeFragment extends Fragment {
                         trayDown = false;
                     }
                     //Start
-                    homeActivityInterface.startService(cbUp.isChecked(), cbdown.isChecked(), cbRestart.isChecked(), cbLockScreen.isChecked(),cbTray.isChecked(),trayDown);
+                    homeActivityInterface.startService(cbUp.isChecked(), cbdown.isChecked(), cbRestart.isChecked(), cbLockScreen.isChecked(),cbTray.isChecked(),trayDown,cbSplit.isChecked());
                     tracker.send(new HitBuilders.EventBuilder()
                             .setCategory("Action")
                             .setAction("Start click")

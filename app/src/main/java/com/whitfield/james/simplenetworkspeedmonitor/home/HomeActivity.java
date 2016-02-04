@@ -21,6 +21,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
     public static final String INTENT_TAG_LOCK_SCREEN = "LOCK_SCREEN";
     public static final String INTENT_TAG_TRAY  = "TRAY";
     public static final String INTENT_TAG_TRAY_DOWN  = "TRAY_DOWN";
+    public static final String INTENT_TAG_SPLIT = "TRAY_SPLIT";
     private final String HOME_ACTIVITY_TAG = "HOME_ACTIVITY";
     public static final String INTENT_TAG_UP = "UP";
     public static final String INTENT_TAG_DOWN = "DOWN";
@@ -56,7 +57,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
 
 
     @Override
-    public void startService(boolean up, boolean down, boolean restart, boolean lockScreen, boolean tray, boolean trayDown) {
+    public void startService(boolean up, boolean down, boolean restart, boolean lockScreen, boolean tray, boolean trayDown, boolean split) {
 
         Intent intent = new Intent(getApplicationContext(), NetworkIntentService.class);
         Bundle bundle = new Bundle();
@@ -66,6 +67,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         bundle.putBoolean(INTENT_TAG_RESTART, restart);
         bundle.putBoolean(INTENT_TAG_TRAY,tray);
         bundle.putBoolean(INTENT_TAG_TRAY_DOWN,trayDown);
+        bundle.putBoolean(INTENT_TAG_SPLIT,split);
         intent.putExtras(bundle);
 
         startService(intent);
@@ -78,6 +80,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         editor.putBoolean(INTENT_TAG_LOCK_SCREEN,lockScreen);
         editor.putBoolean(INTENT_TAG_TRAY,tray);
         editor.putBoolean(INTENT_TAG_TRAY_DOWN,trayDown);
+        editor.putBoolean(INTENT_TAG_SPLIT,split);
         editor.commit();
 
         Log.i("Preferences",sharedPreferences.getAll().toString());

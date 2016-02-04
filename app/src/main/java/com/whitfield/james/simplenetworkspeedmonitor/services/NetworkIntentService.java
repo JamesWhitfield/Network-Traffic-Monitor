@@ -1,6 +1,5 @@
 package com.whitfield.james.simplenetworkspeedmonitor.services;
 
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,14 +12,15 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
-import android.text.Html;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.whitfield.james.simplenetworkspeedmonitor.R;
 import com.whitfield.james.simplenetworkspeedmonitor.home.HomeActivity;
 
-import java.util.Date;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -37,9 +37,19 @@ public class NetworkIntentService extends Service {
      */
     private final static String TAG = "SpeedServiceTest";
 
+    private static final String TOTAL_RECEIVED = "ReceivedTotal";
+    private static final String TOTAL_TRANSMITTED = "TransmittedTotal";
+    private static final String MOBILE_RECEIVED = "ReceivedMobile";
+    private static final String MOBILE_TRANSMITTED = "TransmittedMobile";
+    private static final String TOTAL_RECEIVED_LAST = "ReceivedTotalLast";
+    private static final String TOTAL_TRANSMITTED_LAST = "TransmittedTotalLast";
+    private static final String MOBILE_RECEIVED_LAST = "ReceivedMobileLast";
+    private static final String MOBILE_TRANSMITTED_LAST = "TransmittedMobileLast";
+
     private static final int NOTIFICATION_ID = 10000;
     public static final String NAME = "NetworkService";
-    Boolean up,down,lockScreen,tray,trayDown = null;
+    Boolean up, down, lockScreen, tray, trayDown = null;
+    Boolean split = false;
     Timer timer;
     private Intent intent;
 
@@ -74,28 +84,33 @@ public class NetworkIntentService extends Service {
         return START_REDELIVER_INTENT;
     }
 
-    private void startService(){
+    private void startService() {
 
         Bundle bundle = intent.getExtras();
 
-        if(bundle.containsKey(HomeActivity.INTENT_TAG_DOWN)){
+        if (bundle.containsKey(HomeActivity.INTENT_TAG_DOWN)) {
             down = bundle.getBoolean(HomeActivity.INTENT_TAG_DOWN);
         }
-        if(bundle.containsKey(HomeActivity.INTENT_TAG_UP)){
+        if (bundle.containsKey(HomeActivity.INTENT_TAG_UP)) {
             up = bundle.getBoolean(HomeActivity.INTENT_TAG_UP);
         }
-        if(bundle.containsKey(HomeActivity.INTENT_TAG_LOCK_SCREEN)){
+        if (bundle.containsKey(HomeActivity.INTENT_TAG_LOCK_SCREEN)) {
             lockScreen = bundle.getBoolean(HomeActivity.INTENT_TAG_LOCK_SCREEN);
         }
-        if(bundle.containsKey(HomeActivity.INTENT_TAG_TRAY)){
+        if (bundle.containsKey(HomeActivity.INTENT_TAG_TRAY)) {
             tray = bundle.getBoolean(HomeActivity.INTENT_TAG_TRAY);
-        }else{
+        } else {
             tray = false;
         }
-        if(bundle.containsKey(HomeActivity.INTENT_TAG_TRAY_DOWN)){
+        if (bundle.containsKey(HomeActivity.INTENT_TAG_TRAY_DOWN)) {
             trayDown = bundle.getBoolean(HomeActivity.INTENT_TAG_TRAY_DOWN);
-        }else{
+        } else {
             trayDown = false;
+        }
+        if (bundle.containsKey(HomeActivity.INTENT_TAG_SPLIT)) {
+            split = bundle.getBoolean(HomeActivity.INTENT_TAG_SPLIT);
+        } else {
+            split = false;
         }
 
         final NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(getApplicationContext())
@@ -105,17 +120,17 @@ public class NetworkIntentService extends Service {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(Notification.CATEGORY_STATUS);
 
-        if(lockScreen == true){
+        if (lockScreen == true) {
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-        }else{
+        } else {
             builder.setVisibility(NotificationCompat.VISIBILITY_SECRET);
         }
 
-        Intent intent1= new Intent(getBaseContext(),HomeActivity.class);
+        Intent intent1 = new Intent(getBaseContext(), HomeActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
         stackBuilder.addParentStack(HomeActivity.class);
         stackBuilder.addNextIntent(intent1);
-        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
         builder.setContentIntent(pendingIntent);
 
@@ -123,83 +138,265 @@ public class NetworkIntentService extends Service {
         startForeground(NOTIFICATION_ID, builder.build());
 
 
-
         timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            Long downStart = TrafficStats.getTotalRxBytes(),
-                    upStart = TrafficStats.getTotalTxBytes();
-            Long downCurrent,
-                    upCurrent;
-
-
-            @Override
-            public void run() {
-
-                downCurrent = TrafficStats.getTotalRxBytes();
-                upCurrent = TrafficStats.getTotalTxBytes();
-
-
-                update(downCurrent, downStart, upCurrent, upStart, builder, notificationManager);
-                //Prepare for next iteration
-                downStart = downCurrent;
-                upStart = upCurrent;
-            }
-        }, 0, 1000);
+        timer.scheduleAtFixedRate(new NetworkTrafficChangeTimerTask(builder), 0, 1000);
 
     }
 
-    private void update(Long downCurrent, Long downStart, Long upCurrent, Long upStart, NotificationCompat.Builder builder, NotificationManager notificationManager){
+    class NetworkTrafficChangeTimerTask extends TimerTask {
 
-        String output = "";
-        //Download output
+        private NotificationCompat.Builder builder;
+        NotificationManager notificationManager;
+        Long downStartTotal ,
+                upStartTotal ,
+                downStartMobile ,
+                upStartMobile ;
 
-        Long kbs = (downCurrent - downStart)/1024;
-        Long UpKbs = (upCurrent - upStart)/1024;
+        public NetworkTrafficChangeTimerTask(android.support.v7.app.NotificationCompat.Builder builder){
+
+            this.builder = builder;
+            this.notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            this.downStartMobile = TrafficStats.getMobileRxBytes();
+            this.upStartMobile = TrafficStats.getMobileTxBytes();
+            this.downStartTotal = TrafficStats.getTotalRxBytes();
+            this.upStartTotal = TrafficStats.getTotalTxBytes();
+
+        }
+
+
+
+
+
+
+
+
+        @Override
+        public void run() {
+
+            //Get live data
+
+            Long downCurrentMobile = TrafficStats.getMobileRxBytes();
+            Long upCurrentMobile = TrafficStats.getMobileTxBytes();
+            Long downCurrentTotal = TrafficStats.getTotalRxBytes();
+            Long upCurrentTotal = TrafficStats.getTotalTxBytes();
+
+
+            if(downCurrentTotal < downStartTotal || upCurrentTotal < upStartTotal){
+                Log.i("Error","");
+            }
+            if(downCurrentMobile < downStartMobile || upCurrentMobile < downStartMobile){
+                Log.i("Error","");
+            }
+
+            JSONObject liveData = new JSONObject();
+            try {
+
+                liveData.put(TOTAL_RECEIVED, downCurrentTotal);
+                liveData.put(TOTAL_TRANSMITTED, upCurrentTotal);
+                liveData.put(MOBILE_RECEIVED, downCurrentMobile);
+                liveData.put(MOBILE_TRANSMITTED, upCurrentMobile);
+                liveData.put(TOTAL_RECEIVED_LAST, downStartTotal);
+                liveData.put(TOTAL_TRANSMITTED_LAST, upStartTotal);
+                liveData.put(MOBILE_RECEIVED_LAST, downStartMobile);
+                liveData.put(MOBILE_TRANSMITTED_LAST, upStartMobile);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            //Metrics and notification update
+            update(liveData, builder, notificationManager);
+
+            //Prepare for next iteration
+            downStartTotal = downCurrentTotal;
+            upStartTotal = upCurrentTotal;
+            downStartMobile = downCurrentMobile;
+            upStartMobile = upCurrentMobile;
+        }
+    }
+
+
+
+    private void update(JSONObject liveData, NotificationCompat.Builder builder, NotificationManager notificationManager){
+
+        //This function calculated all of the changes since the last call.
+        try {
+            //Calculate totals for step
+            Long totalReceived ;
+            Long totalTransmitted = 0l;
+            Long mobileReceived = 0l;
+            Long mobileTransmitted = 0l;
+            Long wifiReceived = 0l;
+            Long wifiTransmitted = 0l;
+
+
+            totalReceived = (liveData.getLong(TOTAL_RECEIVED) - liveData.getLong(TOTAL_RECEIVED_LAST));
+            totalTransmitted = (liveData.getLong(TOTAL_TRANSMITTED) - liveData.getLong(TOTAL_TRANSMITTED_LAST));
+            mobileReceived = (liveData.getLong(MOBILE_RECEIVED) - liveData.getLong(MOBILE_RECEIVED_LAST));
+            mobileTransmitted = (liveData.getLong(MOBILE_TRANSMITTED) - liveData.getLong(MOBILE_TRANSMITTED_LAST));
+
+            wifiReceived = totalReceived - mobileReceived;
+            wifiTransmitted = totalTransmitted - mobileTransmitted;
+
+            if(mobileReceived < 0 || wifiReceived < 0){
+                Log.i("Error","Negative value");
+            }
+
+
+            logNetworkChange(totalReceived, totalTransmitted, mobileReceived, mobileTransmitted, wifiReceived, wifiTransmitted);
+
+
+
+            //Update notification tray icon
+            if(tray){
+                if(trayDown){
+                    setSmallIcon(builder, totalReceived/1024);
+                }else{
+                    setSmallIcon(builder, totalTransmitted/1024);
+                }
+            }
+
+            //Simple output
+            if(!split) {
+                //Simple notification view
+                String output = returnSimpleStringOutput(totalReceived / 1024, totalTransmitted / 1024);
+                RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification_simple);
+                remoteViews.setTextViewText(R.id.tvContent, output);
+                builder.setContent(remoteViews);
+            }else{
+                //detailed view
+                RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification_detailed);
+
+                String mobileOutput = "";
+                String wifiOutput = "";
+                if(down & up){
+
+                    wifiOutput = stringDownNotificationOutput(wifiReceived) + "    " + stringUpNotificationOutput(wifiTransmitted);
+                    mobileOutput = stringDownNotificationOutput(mobileReceived) + "    " + stringUpNotificationOutput(mobileTransmitted);
+                }else if(up){
+                    wifiOutput = stringUpNotificationOutput(wifiTransmitted);
+                    mobileOutput =  stringUpNotificationOutput(mobileTransmitted);
+                }else if(down){
+                    wifiOutput = stringDownNotificationOutput(wifiReceived);
+                    mobileOutput = stringDownNotificationOutput(mobileReceived);
+                }else{
+                    wifiOutput = "Setting required";
+                    mobileOutput =  "Setting required";
+                }
+                remoteViews.setTextViewText(R.id.tvMobile,  mobileOutput);
+                remoteViews.setTextViewText(R.id.tvWifi, wifiOutput);
+                builder.setContent(remoteViews);
+            }
+
+
+            builder.setShowWhen(false);
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private boolean logNetworkChange(Long totalReceived, Long totalTransmitted, Long mobileReceived, Long mobileTransmitted, Long wifiReceived, Long wifiTransmitted){
+
+        if(totalReceived > 0 ||
+                totalTransmitted > 0 ||
+                mobileReceived > 0 ||
+                mobileTransmitted > 0 ||
+                wifiReceived > 0 ||
+                wifiTransmitted > 0){
+            Log.i("Network", "Action Detected");
+            Log.i("Network", "Total: " +stringDownNotificationOutput(totalReceived) + "  " + stringUpNotificationOutput(totalTransmitted) );
+            Log.i("Network", "Mobile: "  +stringDownNotificationOutput(mobileReceived)+  "  " + stringUpNotificationOutput(mobileTransmitted));
+            Log.i("Network", "WIFI: "  +stringDownNotificationOutput(wifiReceived )+  "  " + stringUpNotificationOutput(wifiTransmitted));
+            Log.i("Network","------------------------------------------");
+            return true;
+        }else{
+            return false;
+        }
+
+
+    }
+
+    private String stringDownNotificationOutput(long value){
+
+        if(value <(1024*1024)){
+            return  "\u25bc " + convertBytesToKbs(value) + "/Kbs";
+        }else{
+            return  "\u25bc " + convertBytesToMbs(value) + "/Mbs";
+        }
+
+    }
+
+    private String stringUpNotificationOutput(long value){
+
+        if(value <(1024*1024)){
+            return  "\u25b2 " + convertBytesToKbs(value) + "/Kbs";
+        }else{
+            return  "\u25b2 " + convertBytesToMbs(value) + "/Mbs";
+        }
+
+    }
+
+    private String convertBytesToMbs(long value) {
+
+        Double megaValue = (double)value / (1024*1024);
+        megaValue = megaValue *100;
+        value = Math.round(megaValue);
+        megaValue = (double)value/100;
+        return String.valueOf(megaValue);
+    }
+
+    private String convertBytesToKbs(Long bytes){
+
+        if(bytes > 0){
+            Long kbs = bytes/1024;
+            if(kbs == 0){
+                return " \u22450";
+            }else{
+                return String.valueOf(kbs);
+            }
+        }else{
+            return "0";
+        }
+    }
+
+    private String returnSimpleStringOutput(Long totalReceivedKbs, Long totalTransmittedKbs){
+
+        String transmitString = "";
+        String receivedString = "";
+
 
         if(down){
-            if(kbs > 1024){
-                long mbs = kbs/1024;
-                output = output + Html.fromHtml("\u25bc")+ mbs + "/Mbs    ";
+            if(totalReceivedKbs > 1024){
+                long mbs = totalReceivedKbs/1024;
+                receivedString =  "\u25bc " + mbs + "/Mbs";
             }else{
 
-                output = output + Html.fromHtml("\u25bc")+ kbs + "/Kbs    ";
+                receivedString = "\u25bc "+ totalReceivedKbs + "/Kbs";
             }
-
-            if(tray && trayDown) {
-                Log.i("TRAY","DOWN");
-                setSmallIcon(builder, kbs);
-            }
-//                        }
-
         }
         //Upload Output
         if(up){
-
-
-            if(UpKbs > 1024){
-                long mbs = UpKbs/1024;
-                output = output +  Html.fromHtml("\u25b2") + mbs + "/Mbs";
+            if(totalTransmittedKbs > 1024){
+                long mbs = totalTransmittedKbs/1024;
+                transmitString = "\u25b2 " + mbs + "/Mbs";
             }else{
-                output = output +  Html.fromHtml("\u25b2") + UpKbs + "/kbs";
+                transmitString = "\u25b2 " + totalTransmittedKbs + "/kbs";
             }
-
-            if(tray && !trayDown){
-                Log.i("TRAY","UP");
-                setSmallIcon(builder, UpKbs);
-            }
-//                        }
         }
 
-        RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.custom_notification);
-        remoteViews.setTextViewText(R.id.tvContent, output);
-        Log.i("OUTPUT", output.trim());
-        builder.setContent(remoteViews);
-
-        builder.setShowWhen(false);
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
-
+        String output;
+        if(transmitString.length() > 0 && receivedString.length() >0){
+            output = receivedString + "    " + transmitString;
+        }else{
+            output = receivedString + transmitString;
+        }
+        /*if(totalReceivedKbs > 0 || totalTransmittedKbs > 0) {
+            Log.i("OUTPUT", output);
+        }*/
+        return output;
     }
 
     public void setSmallIcon(NotificationCompat.Builder builder, double fin){
