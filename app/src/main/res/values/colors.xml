@@ -6,4 +6,6 @@
     <color name="color_text_primary_black">#DE000000</color>
     <color name="color_text_secondary_black">#8A000000</color>
     <color name="color_text_third_black">#61000000</color>
+
+    <color name="color_grey">#616161</color>
 </resources>

@@ -1,49 +1,34 @@
-package com.whitfield.james.simplenetworkspeedmonitor.home;
+package com.whitfield.james.simplenetworkspeedmonitor.manager;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.whitfield.james.simplenetworkspeedmonitor.R;
-import com.whitfield.james.simplenetworkspeedmonitor.manager.ApplicationTrafficMonitorActivity;
-import com.whitfield.james.simplenetworkspeedmonitor.services.NetworkIntentService;
+import com.whitfield.james.simplenetworkspeedmonitor.home.HomeActivity;
 
-/**
- * Created by jwhit on 18/01/2016.
- */
-public class HomeActivity extends AppCompatActivity implements HomeActivityInterface, NavigationView.OnNavigationItemSelectedListener {
+public class ApplicationTrafficMonitorActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static final String TAG = "ApplicationMonitor";
 
-    public static final String INTENT_TAG_LOCK_SCREEN = "LOCK_SCREEN";
-    public static final String INTENT_TAG_TRAY  = "TRAY";
-    public static final String INTENT_TAG_TRAY_DOWN  = "TRAY_DOWN";
-    public static final String INTENT_TAG_SPLIT = "TRAY_SPLIT";
-    private final String HOME_ACTIVITY_TAG = "HOME_ACTIVITY";
-    public static final String INTENT_TAG_UP = "UP";
-    public static final String INTENT_TAG_DOWN = "DOWN";
-    public static final String INTENT_TAG_RESTART = "RESTART";
-
-    private Fragment homeFragment;
+    private Fragment applicationMonitorFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_single_fragment);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -67,70 +52,20 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         if (savedInstanceState != null) {
-            homeFragment = getSupportFragmentManager().findFragmentByTag(HOME_ACTIVITY_TAG);
+            applicationMonitorFragment = getSupportFragmentManager().findFragmentByTag(TAG);
         } else {
 
-            homeFragment = new HomeFragment();
+            applicationMonitorFragment = new ApplicationTrafficMonitorFragment();
 
             //loginFragment.setArguments(getIntent().getExtras());
 
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-            fragmentTransaction.add(R.id.fragmentContainer, homeFragment, HOME_ACTIVITY_TAG);
+            fragmentTransaction.add(R.id.fragmentContainer, applicationMonitorFragment, TAG);
             fragmentTransaction.commit();
         }
-
-
-    }
-
-
-    @Override
-    public void startService(boolean up, boolean down, boolean restart, boolean lockScreen, boolean tray, boolean trayDown, boolean split) {
-
-        Intent intent = new Intent(getApplicationContext(), NetworkIntentService.class);
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(INTENT_TAG_UP,up);
-        bundle.putBoolean(INTENT_TAG_DOWN, down);
-        bundle.putBoolean(INTENT_TAG_LOCK_SCREEN,lockScreen);
-        bundle.putBoolean(INTENT_TAG_RESTART, restart);
-        bundle.putBoolean(INTENT_TAG_TRAY,tray);
-        bundle.putBoolean(INTENT_TAG_TRAY_DOWN,trayDown);
-        bundle.putBoolean(INTENT_TAG_SPLIT,split);
-        intent.putExtras(bundle);
-
-        startService(intent);
-
-        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preferences_key),MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(getString(R.string.restart_key),restart);
-        editor.putBoolean(INTENT_TAG_UP,up);
-        editor.putBoolean(INTENT_TAG_DOWN,down);
-        editor.putBoolean(INTENT_TAG_LOCK_SCREEN,lockScreen);
-        editor.putBoolean(INTENT_TAG_TRAY,tray);
-        editor.putBoolean(INTENT_TAG_TRAY_DOWN,trayDown);
-        editor.putBoolean(INTENT_TAG_SPLIT,split);
-        editor.commit();
-
-        Log.i("Preferences",sharedPreferences.getAll().toString());
-
-        Log.i(HOME_ACTIVITY_TAG,"Start service");
-    }
-
-    @Override
-    public void stopService() {
-
-        Intent intent = new Intent(getApplicationContext(), NetworkIntentService.class);
-        Boolean b = stopService(intent);
-
-        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preferences_key),MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(getString(R.string.restart_key),false);
-        editor.commit();
-
-        Log.i(HOME_ACTIVITY_TAG,"Stop service:" +b);
     }
 
     @Override
@@ -172,16 +107,12 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         int id = item.getItemId();
 
         if (id == R.id.nav_live) {
-
             // Move to live
-            onBackPressed();
-
-        } else if (id == R.id.nav_applications) {
-
-            // Move to application
-            Intent intent = new Intent(this,ApplicationTrafficMonitorActivity.class);
+            Intent intent = new Intent(this,HomeActivity.class);
             startActivity(intent);
-
+        } else if (id == R.id.nav_applications) {
+            // Move to application
+            onBackPressed();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

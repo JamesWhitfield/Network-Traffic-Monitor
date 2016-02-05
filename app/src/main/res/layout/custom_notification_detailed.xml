@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_signal_cellular_4_bar_black_24dp"
-            android:tint="@android:color/secondary_text_dark" />
+            android:tint="@color/color_grey" />
 
         <TextView
             android:id="@+id/tvMobile"
@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_signal_wifi_4_bar_black_24dp"
-            android:tint="@android:color/secondary_text_dark" />
+            android:tint="@color/color_grey" />
 
         <TextView
             android:id="@+id/tvWifi"

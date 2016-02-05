@@ -17,6 +17,7 @@ import android.widget.RemoteViews;
 
 import com.whitfield.james.simplenetworkspeedmonitor.R;
 import com.whitfield.james.simplenetworkspeedmonitor.home.HomeActivity;
+import com.whitfield.james.simplenetworkspeedmonitor.util.Common;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -271,14 +272,14 @@ public class NetworkIntentService extends Service {
                 String wifiOutput = "";
                 if(down & up){
 
-                    wifiOutput = stringDownNotificationOutput(wifiReceived) + "    " + stringUpNotificationOutput(wifiTransmitted);
-                    mobileOutput = stringDownNotificationOutput(mobileReceived) + "    " + stringUpNotificationOutput(mobileTransmitted);
+                    wifiOutput = Common.stringDownNotificationOutput(wifiReceived) + "    " + Common.stringUpNotificationOutput(wifiTransmitted);
+                    mobileOutput = Common.stringDownNotificationOutput(mobileReceived) + "    " + Common.stringUpNotificationOutput(mobileTransmitted);
                 }else if(up){
-                    wifiOutput = stringUpNotificationOutput(wifiTransmitted);
-                    mobileOutput =  stringUpNotificationOutput(mobileTransmitted);
+                    wifiOutput = Common.stringUpNotificationOutput(wifiTransmitted);
+                    mobileOutput =  Common.stringUpNotificationOutput(mobileTransmitted);
                 }else if(down){
-                    wifiOutput = stringDownNotificationOutput(wifiReceived);
-                    mobileOutput = stringDownNotificationOutput(mobileReceived);
+                    wifiOutput = Common.stringDownNotificationOutput(wifiReceived);
+                    mobileOutput = Common.stringDownNotificationOutput(mobileReceived);
                 }else{
                     wifiOutput = "Setting required";
                     mobileOutput =  "Setting required";
@@ -307,9 +308,9 @@ public class NetworkIntentService extends Service {
                 wifiReceived > 0 ||
                 wifiTransmitted > 0){
             Log.i("Network", "Action Detected");
-            Log.i("Network", "Total: " +stringDownNotificationOutput(totalReceived) + "  " + stringUpNotificationOutput(totalTransmitted) );
-            Log.i("Network", "Mobile: "  +stringDownNotificationOutput(mobileReceived)+  "  " + stringUpNotificationOutput(mobileTransmitted));
-            Log.i("Network", "WIFI: "  +stringDownNotificationOutput(wifiReceived )+  "  " + stringUpNotificationOutput(wifiTransmitted));
+            Log.i("Network", "Total: " + Common.stringDownNotificationOutput(totalReceived) + "  " + Common.stringUpNotificationOutput(totalTransmitted) );
+            Log.i("Network", "Mobile: "  +Common.stringDownNotificationOutput(mobileReceived)+  "  " + Common.stringUpNotificationOutput(mobileTransmitted));
+            Log.i("Network", "WIFI: "  +Common.stringDownNotificationOutput(wifiReceived)+  "  " + Common.stringUpNotificationOutput(wifiTransmitted));
             Log.i("Network","------------------------------------------");
             return true;
         }else{
@@ -319,48 +320,9 @@ public class NetworkIntentService extends Service {
 
     }
 
-    private String stringDownNotificationOutput(long value){
 
-        if(value <(1024*1024)){
-            return  "\u25bc " + convertBytesToKbs(value) + "/Kbs";
-        }else{
-            return  "\u25bc " + convertBytesToMbs(value) + "/Mbs";
-        }
 
-    }
 
-    private String stringUpNotificationOutput(long value){
-
-        if(value <(1024*1024)){
-            return  "\u25b2 " + convertBytesToKbs(value) + "/Kbs";
-        }else{
-            return  "\u25b2 " + convertBytesToMbs(value) + "/Mbs";
-        }
-
-    }
-
-    private String convertBytesToMbs(long value) {
-
-        Double megaValue = (double)value / (1024*1024);
-        megaValue = megaValue *100;
-        value = Math.round(megaValue);
-        megaValue = (double)value/100;
-        return String.valueOf(megaValue);
-    }
-
-    private String convertBytesToKbs(Long bytes){
-
-        if(bytes > 0){
-            Long kbs = bytes/1024;
-            if(kbs == 0){
-                return " \u22450";
-            }else{
-                return String.valueOf(kbs);
-            }
-        }else{
-            return "0";
-        }
-    }
 
     private String returnSimpleStringOutput(Long totalReceivedKbs, Long totalTransmittedKbs){
 

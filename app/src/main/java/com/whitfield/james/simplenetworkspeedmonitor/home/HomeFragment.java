@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +35,7 @@ public class HomeFragment extends Fragment {
     private RadioButton rbDownload,rbUpload;
     private Boolean trayDown;
     private Tracker tracker;
+    private ActionBar actionBar;
 
 
     @Override
@@ -59,6 +62,9 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view;
+
+        actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        actionBar.setSubtitle("Live Monitor");
 
         view = inflater.inflate(R.layout.home_screen,container,false);
 
