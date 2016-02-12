@@ -31,6 +31,44 @@ public class Common {
 
     }
 
+    public static String stringDownTotalOutput(long value){
+
+
+
+        if(value < 1024){
+            return  "\u25bc " + value + " Bytes";
+        }else if(value <(1024*1024)){
+            return  "\u25bc " + convertBytesToKbs(value) + " Kb";
+        }else if(value < (1024*1024*1024)){
+            return  "\u25bc " + convertBytesToMbs(value) + " Mb";
+        }else{
+            return  "\u25bc " + convertBytesToGbs(value) + " Gb";
+        }
+
+    }
+
+    public static String stringUpTotalOutput(long value){
+
+        if(value < 1024){
+            return  "\u25b2 " + value + " Bytes";
+        }else if(value <(1024*1024)){
+            return  "\u25b2 " + convertBytesToKbs(value) + " Kb";
+        }else if(value < (1024*1024*1024)){
+            return  "\u25b2 " + convertBytesToMbs(value) + " Mb";
+        }else{
+            return  "\u25b2 " + convertBytesToGbs(value) + " Gb";
+        }
+    }
+
+    public static String convertBytesToGbs(long value) {
+
+        Double megaValue = (double)value / (1024*1024*1024);
+        megaValue = megaValue *100;
+        value = Math.round(megaValue);
+        megaValue = (double)value/100;
+        return String.valueOf(megaValue);
+    }
+
     public static String convertBytesToMbs(long value) {
 
         Double megaValue = (double)value / (1024*1024);

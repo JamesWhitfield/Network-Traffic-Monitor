@@ -1,7 +1,10 @@
 package com.whitfield.james.simplenetworkspeedmonitor.home;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -17,15 +20,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.whitfield.james.simplenetworkspeedmonitor.R;
 import com.whitfield.james.simplenetworkspeedmonitor.manager.ApplicationTrafficMonitorActivity;
 import com.whitfield.james.simplenetworkspeedmonitor.services.NetworkIntentService;
+import com.whitfield.james.simplenetworkspeedmonitor.util.NavBarUtil;
 
 /**
  * Created by jwhit on 18/01/2016.
  */
-public class HomeActivity extends AppCompatActivity implements HomeActivityInterface, NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements HomeActivityInterface {
 
 
     public static final String INTENT_TAG_LOCK_SCREEN = "LOCK_SCREEN";
@@ -58,14 +63,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         });*/
         fab.setVisibility(View.GONE);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        NavBarUtil navBarUtil = new NavBarUtil(this);
+        navBarUtil.setup();
 
 
         if (savedInstanceState != null) {
@@ -165,27 +164,5 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityInter
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
 
-        if (id == R.id.nav_live) {
-
-            // Move to live
-            onBackPressed();
-
-        } else if (id == R.id.nav_applications) {
-
-            // Move to application
-            Intent intent = new Intent(this,ApplicationTrafficMonitorActivity.class);
-            startActivity(intent);
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 }

@@ -1,6 +1,8 @@
 package com.whitfield.james.simplenetworkspeedmonitor.manager;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -15,12 +17,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.whitfield.james.simplenetworkspeedmonitor.R;
 import com.whitfield.james.simplenetworkspeedmonitor.home.HomeActivity;
+import com.whitfield.james.simplenetworkspeedmonitor.util.NavBarUtil;
 
 public class ApplicationTrafficMonitorActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+         {
 
     public static final String TAG = "ApplicationMonitor";
 
@@ -43,14 +47,11 @@ public class ApplicationTrafficMonitorActivity extends AppCompatActivity
         });*/
         fab.setVisibility(View.GONE);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        NavBarUtil navBarUtil = new NavBarUtil(this);
+        navBarUtil.setup();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+
+
 
         if (savedInstanceState != null) {
             applicationMonitorFragment = getSupportFragmentManager().findFragmentByTag(TAG);
@@ -100,23 +101,5 @@ public class ApplicationTrafficMonitorActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
 
-        if (id == R.id.nav_live) {
-            // Move to live
-            Intent intent = new Intent(this,HomeActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_applications) {
-            // Move to application
-            onBackPressed();
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 }

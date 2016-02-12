@@ -15,5 +15,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="app_monitor_help" >All data is valid from last system reboot. Data is reset when the device is restarted.</string>
 </resources>
 

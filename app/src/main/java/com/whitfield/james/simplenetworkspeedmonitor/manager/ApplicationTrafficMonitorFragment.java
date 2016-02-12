@@ -2,37 +2,32 @@ package com.whitfield.james.simplenetworkspeedmonitor.manager;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.TrafficStats;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.whitfield.james.simplenetworkspeedmonitor.R;
-import com.whitfield.james.simplenetworkspeedmonitor.application.ApplicationController;
-import com.whitfield.james.simplenetworkspeedmonitor.home.HomeActivityInterface;
 import com.whitfield.james.simplenetworkspeedmonitor.objects.PackageNetwork;
-import com.whitfield.james.simplenetworkspeedmonitor.util.Common;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Handler;
 
 /**
  * Created by jwhit on 05/02/2016.
@@ -46,6 +41,13 @@ public class ApplicationTrafficMonitorFragment extends android.support.v4.app.Fr
     private LinearLayoutManager layoutmanager;
     private RecyclerView.Adapter adapter;
     private ProgressWheel wheel;
+    private Boolean initial;
+
+    private MenuItem miHelp;
+
+    Comparator<PackageNetwork> comparatorReceived;
+
+    Timer timer;
 
     ArrayList<PackageNetwork> appsInfo;
 
@@ -53,8 +55,54 @@ public class ApplicationTrafficMonitorFragment extends android.support.v4.app.Fr
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        initial = false;
         appsInfo = new ArrayList<>();
         adapter = new ApplicationAdapter(appsInfo);
+
+        comparatorReceived = new Comparator<PackageNetwork>() {
+            @Override
+            public int compare(PackageNetwork lhs, PackageNetwork rhs) {
+
+                Long receivedRhs = rhs.getBytesReceievd();
+                Long receivedLhs = lhs.getBytesReceievd();
+
+                if(receivedLhs > receivedRhs){
+                    return 1;
+                }else if(receivedLhs < receivedRhs){
+                    return -1;
+                }else {
+                    return 0;
+                }
+            }
+        };
+
+        setHasOptionsMenu(true);
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        miHelp = menu.add("Help");
+        miHelp.setIcon(R.drawable.ic_help_white_24dp);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+
+        int id = item.getItemId();
+        if(id == miHelp.getItemId()){
+            DialogFragment dialogFragment = new AppMonitorHelpDialogFragment();
+            dialogFragment.show(getFragmentManager(),"helpDialog");
+            return true;
+        }
+
+
+        return super.onOptionsItemSelected(item);
+
+
 
     }
 
@@ -89,27 +137,46 @@ public class ApplicationTrafficMonitorFragment extends android.support.v4.app.Fr
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        new ApplicationInfoTask().execute();
+    }
+
     private void setupData() {
 
 
-        new ApplicationInfoTask().execute();
+//        new ApplicationInfoTask().execute();
+        /*final android.os.Handler handler = new android.os.Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                new ApplicationInfoTask().execute();
+                handler.postDelayed(this,10000);
+            }
+        },0);*/
+
 
     }
 
     private void startSpin(){
 
-        recyclerView.setVisibility(View.GONE);
-        wheel.setVisibility(View.VISIBLE);
-        wheel.spin();
+        if(!initial) {
+            recyclerView.setVisibility(View.GONE);
+            wheel.setVisibility(View.VISIBLE);
+            wheel.spin();
+        }
 
     }
 
     private void stopSpin(){
 
-
-        recyclerView.setVisibility(View.VISIBLE);
-        wheel.setVisibility(View.GONE);
-        wheel.stopSpinning();
+        if(!initial) {
+            recyclerView.setVisibility(View.VISIBLE);
+            wheel.setVisibility(View.GONE);
+            wheel.stopSpinning();
+            initial = true;
+        }
     }
 
     public class ApplicationInfoTask extends AsyncTask<Void, Integer, String> {
@@ -128,22 +195,7 @@ public class ApplicationTrafficMonitorFragment extends android.support.v4.app.Fr
                 appsInfo.add(new PackageNetwork(applicationInfo,packageManager));
             }
 
-            Comparator<PackageNetwork> comparatorReceived = new Comparator<PackageNetwork>() {
-                @Override
-                public int compare(PackageNetwork lhs, PackageNetwork rhs) {
 
-                    Long receivedRhs = rhs.getBytesReceievd();
-                    Long receivedLhs = lhs.getBytesReceievd();
-
-                    if(receivedLhs > receivedRhs){
-                        return 1;
-                    }else if(receivedLhs < receivedRhs){
-                        return -1;
-                    }else {
-                        return 0;
-                    }
-                }
-            };
             Collections.sort(appsInfo,comparatorReceived);
             Collections.reverse(appsInfo);
 
@@ -164,12 +216,25 @@ public class ApplicationTrafficMonitorFragment extends android.support.v4.app.Fr
 
             adapter.notifyDataSetChanged();
             stopSpin();
-
-
-
+//            Toast.makeText(getContext(),"Update",Toast.LENGTH_SHORT).show();
             super.onPostExecute(null);
         }
 
 
+    }
+
+    public class UpdateTimerTask extends TimerTask{
+
+        @Override
+        public void run() {
+            /*for (PackageNetwork packageNetwork : appsInfo) {
+                packageNetwork.updateNetworkDetails();
+            }
+            Collections.sort(appsInfo, comparatorReceived);
+            Collections.reverse(appsInfo);
+            adapter.notifyDataSetChanged();
+            Toast.makeText(getContext(),"Update",Toast.LENGTH_SHORT).show();*/
+
+        }
     }
 }

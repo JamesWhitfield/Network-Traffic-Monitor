@@ -76,13 +76,14 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         holder.tvName.setText(packageNetwork.getNameOrPackage());
 
 
-        String transmittedKbs = Common.bytesToKbs(packageNetwork.getBytesTransmitted());
-        String receivedKbs = Common.bytesToKbs(packageNetwork.getBytesReceievd());
+//        String transmittedKbs = Common.bytesToKbs(packageNetwork.getBytesTransmitted());
+//        String receivedKbs = Common.bytesToKbs(packageNetwork.getBytesReceievd());
 
-        holder.tvTransmitted.setText(Common.stringUpNotificationOutput(packageNetwork.getBytesTransmitted()));
-        holder.tvReceived.setText(Common.stringDownNotificationOutput(packageNetwork.getBytesReceievd()));
+        holder.tvTransmitted.setText(Common.stringUpTotalOutput(packageNetwork.getBytesTransmitted()));
+        holder.tvReceived.setText(Common.stringDownTotalOutput(packageNetwork.getBytesReceievd()));
+        //TODO change out put to show total values not values persecond
 
-        Log.i(TAG, packageNetwork.getNameOrPackage() + " - " + "Down: " + receivedKbs + " Kbs Up: " + transmittedKbs + " Kbs");
+//        Log.i(TAG, packageNetwork.getNameOrPackage() + " - " + "Down: " + receivedKbs + " Kbs Up: " + transmittedKbs + " Kbs");
     }
 
     public int getItemCount() {
