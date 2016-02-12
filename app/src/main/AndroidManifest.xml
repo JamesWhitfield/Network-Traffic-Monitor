@@ -39,7 +39,13 @@
             android:name=".manager.ApplicationTrafficMonitorActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            ></activity>
+            />
+
+        <activity
+            android:name=".tools.ToolsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

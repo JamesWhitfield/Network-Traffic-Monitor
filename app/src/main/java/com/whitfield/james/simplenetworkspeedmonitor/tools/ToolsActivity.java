@@ -1,0 +1,75 @@
+package com.whitfield.james.simplenetworkspeedmonitor.tools;
+
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+
+import com.whitfield.james.simplenetworkspeedmonitor.R;
+import com.whitfield.james.simplenetworkspeedmonitor.manager.ApplicationTrafficMonitorFragment;
+import com.whitfield.james.simplenetworkspeedmonitor.util.NavBarUtil;
+
+/**
+ * Created by jwhit on 12/02/2016.
+ */
+public class ToolsActivity extends AppCompatActivity {
+
+    public static final String TAG = "Tools";
+
+    private Fragment toolsFragment;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_single_fragment);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });*/
+        fab.setVisibility(View.GONE);
+
+        NavBarUtil navBarUtil = new NavBarUtil(this);
+        navBarUtil.setup();
+
+
+
+
+        if (savedInstanceState != null) {
+            toolsFragment = getSupportFragmentManager().findFragmentByTag(TAG);
+        } else {
+
+            toolsFragment = new ToolsFragment();
+
+            //loginFragment.setArguments(getIntent().getExtras());
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+            fragmentTransaction.add(R.id.fragmentContainer, toolsFragment, TAG);
+            fragmentTransaction.commit();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+}

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        >
+
+        <TextView
+            android:id="@+id/tvToolMobileTile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:text="Mobile Data Reminder"
+            />
+
+        <TextView
+            android:id="@+id/tvToolMobileDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="When Mobile data is enabled, remind the user if mobile data is still active after specified time. Notification alert."
+            android:layout_marginTop="4dp"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            >
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/swMobile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true" />
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/spTime"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+
+                />
+
+
+
+
+
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+
+</ScrollView>

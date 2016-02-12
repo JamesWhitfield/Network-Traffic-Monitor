@@ -3,11 +3,15 @@ package com.whitfield.james.simplenetworkspeedmonitor.home;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,6 +94,26 @@ public class HomeFragment extends Fragment {
 
         setupSettings();
         startServiceSetup();
+
+        test();
+    }
+
+    private void test() {
+
+        //TODO max speed
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ConnectivityManager connectivity = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            Network[] networks = connectivity.getAllNetworks();
+            for (int i = 0; i < networks.length; i++) {
+                NetworkCapabilities capabilities = connectivity.getNetworkCapabilities(networks[i]);
+                Log.i("Net",capabilities.toString());
+                Log.i("Net", String.valueOf(capabilities.getLinkDownstreamBandwidthKbps()));
+                Log.i("Net", String.valueOf(capabilities.getLinkUpstreamBandwidthKbps()));
+            }
+        }
+
+
 
     }
 

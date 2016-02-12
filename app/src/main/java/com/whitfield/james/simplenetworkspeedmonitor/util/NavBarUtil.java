@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.whitfield.james.simplenetworkspeedmonitor.R;
 import com.whitfield.james.simplenetworkspeedmonitor.home.HomeActivity;
 import com.whitfield.james.simplenetworkspeedmonitor.manager.ApplicationTrafficMonitorActivity;
+import com.whitfield.james.simplenetworkspeedmonitor.tools.ToolsActivity;
 
 /**
  * Created by jwhit on 12/02/2016.
@@ -74,6 +75,10 @@ public class NavBarUtil implements NavigationView.OnNavigationItemSelectedListen
         } else if (id == R.id.nav_applications) {
             // Move to application
             Intent intent = new Intent(activity,ApplicationTrafficMonitorActivity.class);
+            activity.startActivity(intent);
+        }else if (id == R.id.nav_tools) {
+            // Move to application
+            Intent intent = new Intent(activity,ToolsActivity.class);
             activity.startActivity(intent);
         }
 

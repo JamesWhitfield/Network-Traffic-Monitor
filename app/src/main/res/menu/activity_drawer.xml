@@ -11,6 +11,11 @@
             android:icon="@drawable/ic_apps_black_24dp"
             android:title="Application Monitor" />
 
+        <item
+            android:id="@+id/nav_tools"
+            android:icon="@drawable/ic_widgets_black_24dp"
+            android:title="Extra Tools" />
+
     </group>
 
 
