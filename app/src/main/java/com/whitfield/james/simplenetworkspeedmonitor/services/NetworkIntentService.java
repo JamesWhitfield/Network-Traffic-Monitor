@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.net.TrafficStats;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -47,7 +48,7 @@ public class NetworkIntentService extends Service {
     private static final String MOBILE_RECEIVED_LAST = "ReceivedMobileLast";
     private static final String MOBILE_TRANSMITTED_LAST = "TransmittedMobileLast";
 
-    private static final int NOTIFICATION_ID = 10000;
+    private static final int NOTIFICATION_ID = 1;
     public static final String NAME = "NetworkService";
     Boolean up, down, lockScreen, tray, trayDown = null;
     Boolean split = false;
@@ -118,6 +119,7 @@ public class NetworkIntentService extends Service {
                 .setContentTitle("Network speed")
 //                    .setContentText("Setup...")
                 .setSmallIcon(R.drawable.ic_stat_)
+
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(Notification.CATEGORY_STATUS);
 
@@ -260,33 +262,71 @@ public class NetworkIntentService extends Service {
             //Simple output
             if(!split) {
                 //Simple notification view
-                String output = returnSimpleStringOutput(totalReceived / 1024, totalTransmitted / 1024);
-                RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification_simple);
-                remoteViews.setTextViewText(R.id.tvContent, output);
-                builder.setContent(remoteViews);
-            }else{
-                //detailed view
-                RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification_detailed);
-
-                String mobileOutput = "";
-                String wifiOutput = "";
-                if(down & up){
-
-                    wifiOutput = Common.stringDownNotificationOutput(wifiReceived) + "    " + Common.stringUpNotificationOutput(wifiTransmitted);
-                    mobileOutput = Common.stringDownNotificationOutput(mobileReceived) + "    " + Common.stringUpNotificationOutput(mobileTransmitted);
-                }else if(up){
-                    wifiOutput = Common.stringUpNotificationOutput(wifiTransmitted);
-                    mobileOutput =  Common.stringUpNotificationOutput(mobileTransmitted);
-                }else if(down){
-                    wifiOutput = Common.stringDownNotificationOutput(wifiReceived);
-                    mobileOutput = Common.stringDownNotificationOutput(mobileReceived);
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    // only for gingerbread and newer versions
+                    String output = returnSimpleStringOutput(totalReceived / 1024, totalTransmitted / 1024);
+                    RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification_simple);
+                    remoteViews.setTextViewText(R.id.tvContent, output);
+                    builder.setContent(remoteViews);
                 }else{
-                    wifiOutput = "Setting required";
-                    mobileOutput =  "Setting required";
+                    //TODO OLD
+                    String output = returnSimpleStringOutput(totalReceived / 1024, totalTransmitted / 1024);
+                    RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification_simple_old);
+                    remoteViews.setTextViewText(R.id.tvContent, output);
+
+                    builder.setContent(remoteViews);
                 }
-                remoteViews.setTextViewText(R.id.tvMobile,  mobileOutput);
-                remoteViews.setTextViewText(R.id.tvWifi, wifiOutput);
-                builder.setContent(remoteViews);
+            }else{
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    // only for gingerbread and newer versions
+                    //detailed view
+                    RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification_detailed);
+
+                    String mobileOutput = "";
+                    String wifiOutput = "";
+                    if(down & up){
+
+                        wifiOutput = Common.stringDownNotificationOutput(wifiReceived) + "    " + Common.stringUpNotificationOutput(wifiTransmitted);
+                        mobileOutput = Common.stringDownNotificationOutput(mobileReceived) + "    " + Common.stringUpNotificationOutput(mobileTransmitted);
+                    }else if(up){
+                        wifiOutput = Common.stringUpNotificationOutput(wifiTransmitted);
+                        mobileOutput =  Common.stringUpNotificationOutput(mobileTransmitted);
+                    }else if(down){
+                        wifiOutput = Common.stringDownNotificationOutput(wifiReceived);
+                        mobileOutput = Common.stringDownNotificationOutput(mobileReceived);
+                    }else{
+                        wifiOutput = "Setting required";
+                        mobileOutput =  "Setting required";
+                    }
+                    remoteViews.setTextViewText(R.id.tvMobile,  mobileOutput);
+                    remoteViews.setTextViewText(R.id.tvWifi, wifiOutput);
+                    builder.setContent(remoteViews);
+                }else {
+                    //TODO OLD
+                    // only for gingerbread and newer versions
+                    //detailed view
+                    RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification_detailed_old);
+
+                    String mobileOutput = "";
+                    String wifiOutput = "";
+                    if(down & up){
+
+                        wifiOutput = Common.stringDownNotificationOutput(wifiReceived) + "    " + Common.stringUpNotificationOutput(wifiTransmitted);
+                        mobileOutput = Common.stringDownNotificationOutput(mobileReceived) + "    " + Common.stringUpNotificationOutput(mobileTransmitted);
+                    }else if(up){
+                        wifiOutput = Common.stringUpNotificationOutput(wifiTransmitted);
+                        mobileOutput =  Common.stringUpNotificationOutput(mobileTransmitted);
+                    }else if(down){
+                        wifiOutput = Common.stringDownNotificationOutput(wifiReceived);
+                        mobileOutput = Common.stringDownNotificationOutput(mobileReceived);
+                    }else{
+                        wifiOutput = "Setting required";
+                        mobileOutput =  "Setting required";
+                    }
+                    remoteViews.setTextViewText(R.id.tvMobile,  mobileOutput);
+                    remoteViews.setTextViewText(R.id.tvWifi, wifiOutput);
+                    builder.setContent(remoteViews);
+                }
             }
 
 

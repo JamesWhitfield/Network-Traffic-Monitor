@@ -3,6 +3,7 @@
     <string name="app_name">Network Traffic Monitor</string>
     <string name="preferences_key">preferences_key</string>
     <string name="restart_key">restart</string>
+    <string name="MDR_key">mobileReminder</string>
     <string name="title_text">Live Traffic Monitor</string>
     <string name="settings_title">Settings</string>
     <string name="instruction_text_2">\u2022 You don\'t even have to keep this app running after you have started the monitor.</string>
@@ -19,11 +20,11 @@
 
     <string-array name="time_units">
         <item>Select</item>
-        <item>1</item>
-        <item>5</item>
-        <item>10</item>
-        <item>30</item>
-        <item>60</item>
+        <item>1 min</item>
+        <item>5 min</item>
+        <item>10 min</item>
+        <item>30 min</item>
+        <item>60 min</item>
     </string-array>
 </resources>
 

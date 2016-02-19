@@ -1,11 +1,14 @@
 package com.whitfield.james.simplenetworkspeedmonitor.application;
 
 import android.app.Application;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.whitfield.james.simplenetworkspeedmonitor.BuildConfig;
 import com.whitfield.james.simplenetworkspeedmonitor.R;
+import com.whitfield.james.simplenetworkspeedmonitor.services.NetworkBroadcastReceiver;
 
 /**
  * Created by jwhit on 19/01/2016.
@@ -33,6 +36,14 @@ public class ApplicationController extends Application {
             }
         }
         return mTracker;
+
+
+
     }
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+    }
 }

@@ -8,12 +8,12 @@ android {
         applicationId "com.whitfield.james.simplenetworkspeedmonitor"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 10
-        versionName "1.2.2.1"
+        versionCode 12
+        versionName "1.3.1"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

@@ -23,7 +23,7 @@
             android:id="@+id/tvToolMobileDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="When Mobile data is enabled, remind the user if mobile data is still active after specified time. Notification alert."
+            android:text="When Mobile data is enabled this will remind the user if mobile data is still active after specified time. Notification alert."
             android:layout_marginTop="4dp"
             />
 

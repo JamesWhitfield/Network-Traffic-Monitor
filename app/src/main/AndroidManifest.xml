@@ -31,8 +31,18 @@
             </intent-filter>
         </receiver>
 
+<!--        <receiver android:name=".services.NetworkBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>-->
+
         <service
             android:name=".services.NetworkIntentService"
+            android:exported="false" />
+
+        <service
+            android:name=".services.MobileDataMonitorService"
             android:exported="false" />
 
         <activity
