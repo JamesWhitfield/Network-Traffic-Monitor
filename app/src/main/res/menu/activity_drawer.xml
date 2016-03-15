@@ -9,7 +9,7 @@
         <item
             android:id="@+id/nav_applications"
             android:icon="@drawable/ic_apps_black_24dp"
-            android:title="Application Monitor" />
+            android:title="Application Traffic Report" />
 
         <item
             android:id="@+id/nav_tools"

@@ -15,8 +15,8 @@
             android:id="@+id/tvToolMobileTile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.AppCompat.Subhead"
             android:text="Mobile Data Reminder"
+            style="@style/TextAppearance.AppCompat.Title"
             />
 
         <TextView
@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:text="When Mobile data is enabled this will remind the user if mobile data is still active after specified time. Notification alert."
             android:layout_marginTop="4dp"
+            style="@style/TextAppearance.AppCompat.Body1"
             />
 
         <RelativeLayout

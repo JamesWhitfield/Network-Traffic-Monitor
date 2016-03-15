@@ -5,10 +5,10 @@
     <string name="restart_key">restart</string>
     <string name="MDR_key">mobileReminder</string>
     <string name="title_text">Live Traffic Monitor</string>
-    <string name="settings_title">Settings</string>
+    <string name="settings_title">Notifications Settings</string>
     <string name="instruction_text_2">\u2022 You don\'t even have to keep this app running after you have started the monitor.</string>
     <string name="instruction_text_1"> \u2022 Press the start button to begin seeing your network traffic in real time.</string>
-    <string name="info_title">Information</string>
+    <string name="info_title">Usage Information</string>
     <string name="instruction_text_3">\u2022 Restart the service to see settings changes.</string>
     <string name="title_activity_application_traffic_monitor">ApplicationTrafficMonitor</string>
 

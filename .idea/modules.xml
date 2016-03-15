@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Simple Network Speed Monitor.iml" filepath="$PROJECT_DIR$/Simple Network Speed Monitor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SimpleNetworkSpeedMonitor.iml" filepath="$PROJECT_DIR$/SimpleNetworkSpeedMonitor.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

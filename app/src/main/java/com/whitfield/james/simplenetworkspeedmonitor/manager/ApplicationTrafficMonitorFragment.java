@@ -113,7 +113,7 @@ public class ApplicationTrafficMonitorFragment extends android.support.v4.app.Fr
         View view;
 
         actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-        actionBar.setSubtitle("Application Monitor");
+        actionBar.setSubtitle("Application Traffic Report");
 
         view = inflater.inflate(R.layout.fragment_list,container,false);
 

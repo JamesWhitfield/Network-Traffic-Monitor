@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_title"
-            style="@style/material_third_textview"
+            style="@style/TextAppearance.AppCompat.Title"
             />
 
         <View
@@ -38,7 +38,8 @@
             android:layout_height="wrap_content"
             android:text="Download Speed"
             android:checked="true"
-
+            android:layout_marginTop="4dp"
+            style="@style/TextAppearance.AppCompat.Body1"
             />
 
         <CheckBox
@@ -47,6 +48,7 @@
             android:layout_height="wrap_content"
             android:text="Upload Speed"
             android:checked="true"
+            style="@style/TextAppearance.AppCompat.Body1"
             />
         <CheckBox
             android:id="@+id/cbRestart"
@@ -54,6 +56,7 @@
             android:layout_height="wrap_content"
             android:text="Auto-Start on device restart"
             android:checked="true"
+            style="@style/TextAppearance.AppCompat.Body1"
             />
         <CheckBox
             android:id="@+id/cbLockScreen"
@@ -61,6 +64,7 @@
             android:layout_height="wrap_content"
             android:text="Show in lock screen"
             android:checked="false"
+            style="@style/TextAppearance.AppCompat.Body1"
             />
 
         <CheckBox
@@ -69,6 +73,7 @@
             android:layout_height="wrap_content"
             android:text="Split mobile and wifi data"
             android:checked="false"
+            style="@style/TextAppearance.AppCompat.Body1"
             />
 
         <CheckBox
@@ -77,6 +82,7 @@
             android:layout_height="wrap_content"
             android:text="Show speed in system tray"
             android:checked="false"
+            style="@style/TextAppearance.AppCompat.Body1"
             />
 
 
@@ -92,11 +98,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Download"
+                style="@style/TextAppearance.AppCompat.Body1"
                 />
             <RadioButton android:id="@+id/rbUpload"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Upload"
+                style="@style/TextAppearance.AppCompat.Body1"
                 />
 
         </RadioGroup>
@@ -129,7 +137,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/info_title"
-        style="@style/material_third_textview"
+        style="@style/TextAppearance.AppCompat.Title"
         />
 
     <View
@@ -143,7 +151,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/instruction_text_1"
-        style="@style/material_secondary_textview"
+        style="@style/TextAppearance.AppCompat.Body1"
         />
 
     <TextView
@@ -152,7 +160,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/instruction_text_2"
-        style="@style/material_secondary_textview"
+        style="@style/TextAppearance.AppCompat.Body1"
         />
 
     <TextView
@@ -161,7 +169,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/instruction_text_3"
-        style="@style/material_secondary_textview"
+        style="@style/TextAppearance.AppCompat.Body1"
         />
 </LinearLayout>
 </ScrollView>
