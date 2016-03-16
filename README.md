@@ -1,4 +1,4 @@
-# Simple Network Speed Monitor
+# Network Traffic Monitor
 
 This is a small, fast, and light-weight app for android devices which primarily allows the user to see live network traffic information direct from the notification menu of their device.
 
