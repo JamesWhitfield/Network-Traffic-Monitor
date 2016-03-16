@@ -1,0 +1,7 @@
+{
+  "name": "Network Traffic Monitor",
+  "tagline": "",
+  "body": "# Network Traffic Monitor\r\n\r\nThis is a small, fast, and light-weight app for android devices which primarily allows the user to see live network traffic information direct from the notification menu of their device.\r\n\r\nServeral extra functions and options have been added since release. The project is always open to suggestions and improvements. \r\n\r\n[Install on your Android device from Google Play store](https://play.google.com/store/apps/details?id=com.whitfield.james.simplenetworkspeedmonitor)\r\n",
+  "google": "",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
