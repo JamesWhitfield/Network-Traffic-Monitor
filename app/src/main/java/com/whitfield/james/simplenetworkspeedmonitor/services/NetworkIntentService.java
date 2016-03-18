@@ -120,8 +120,16 @@ public class NetworkIntentService extends Service {
 //                    .setContentText("Setup...")
                 .setSmallIcon(R.drawable.ic_stat_)
 
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOngoing(true)
                 .setCategory(Notification.CATEGORY_STATUS);
+
+
+        if(tray){
+            builder.setPriority(NotificationCompat.PRIORITY_MAX);
+        }else{
+
+            builder.setPriority(NotificationCompat.PRIORITY_MIN);
+        }
 
         if (lockScreen == true) {
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
@@ -252,6 +260,7 @@ public class NetworkIntentService extends Service {
 
             //Update notification tray icon
             if(tray){
+
                 if(trayDown){
                     setSmallIcon(builder, totalReceived/1024);
                 }else{
