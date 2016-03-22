@@ -115,13 +115,13 @@ public class NetworkIntentService extends Service {
             split = false;
         }
 
-        final NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(getApplicationContext())
+        NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(getApplicationContext())
                 .setContentTitle("Network speed")
 //                    .setContentText("Setup...")
                 .setSmallIcon(R.drawable.ic_stat_)
 
                 .setOngoing(true)
-                .setCategory(Notification.CATEGORY_STATUS);
+                .setCategory(Notification.CATEGORY_SYSTEM);
 
 
         if(tray){
@@ -254,7 +254,7 @@ public class NetworkIntentService extends Service {
             }
 
 
-            logNetworkChange(totalReceived, totalTransmitted, mobileReceived, mobileTransmitted, wifiReceived, wifiTransmitted);
+//            logNetworkChange(totalReceived, totalTransmitted, mobileReceived, mobileTransmitted, wifiReceived, wifiTransmitted);
 
 
 
