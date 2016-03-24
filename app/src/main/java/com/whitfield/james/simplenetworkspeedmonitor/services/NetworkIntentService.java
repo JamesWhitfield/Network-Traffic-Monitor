@@ -121,7 +121,7 @@ public class NetworkIntentService extends Service {
                 .setSmallIcon(R.drawable.ic_stat_)
 
                 .setOngoing(true)
-                .setCategory(Notification.CATEGORY_SYSTEM);
+                .setCategory(Notification.CATEGORY_STATUS);
 
 
         if(tray){
