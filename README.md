@@ -1,4 +1,4 @@
-[![GitHub issues](https://img.shields.io/github/issues/badges/shields.svg?maxAge=2592000)]()
+[![GitHub issues](https://img.shields.io/github/issues/badges/shields.svg?maxAge=2592000)](https://github.com/JamesWhitfield/Network-Traffic-Monitor/issues)
 
 # Network Traffic Monitor
 
